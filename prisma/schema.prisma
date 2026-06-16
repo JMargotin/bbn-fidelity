@@ -1,0 +1,185 @@
+// Prisma schema for BBN Fidelity.
+// Datasource URL is provided via prisma.config.ts (which loads .env.local through dotenv).
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================================================
+// Authentication models (managed by better-auth)
+// ============================================================================
+
+model User {
+  id                 String   @id @default(cuid())
+  email              String   @unique
+  emailVerified      Boolean  @default(false)
+  name               String
+  image              String?
+  role               Role     @default(STAFF)
+  mustChangePassword Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  accounts             Account[]
+  sessions             Session[]
+  transactionsCreated  Transaction[]      @relation("TransactionCreatedBy")
+  transactionsReversed Transaction[]      @relation("TransactionReversedBy")
+  redemptions          RewardRedemption[]
+}
+
+enum Role {
+  OWNER
+  STAFF
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  expiresAt DateTime
+  token     String   @unique
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  userId                String
+  accountId             String
+  providerId            String
+  password              String?
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, accountId])
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+// ============================================================================
+// Business models
+// ============================================================================
+
+model Customer {
+  id          String    @id @default(cuid())
+  firstName   String
+  phoneE164   String    @unique
+  pointsTotal Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  transactions Transaction[]
+  redemptions  RewardRedemption[]
+  passDevices  PassDevice[]
+
+  @@index([deletedAt])
+}
+
+model Transaction {
+  id                   String    @id @default(cuid())
+  customerId           String
+  amountEurCents       Int
+  pointsCredit         Int
+  createdByEmployeeId  String
+  createdAt            DateTime  @default(now())
+  reversedAt           DateTime?
+  reversedByEmployeeId String?
+
+  customer   Customer @relation(fields: [customerId], references: [id])
+  createdBy  User     @relation("TransactionCreatedBy", fields: [createdByEmployeeId], references: [id])
+  reversedBy User?    @relation("TransactionReversedBy", fields: [reversedByEmployeeId], references: [id])
+
+  @@index([customerId, createdAt])
+  @@index([createdAt])
+}
+
+model Reward {
+  id              String   @id @default(cuid())
+  label           String
+  thresholdPoints Int
+  active          Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  redemptions RewardRedemption[]
+}
+
+model RewardRedemption {
+  id                  String   @id @default(cuid())
+  customerId          String
+  rewardId            String
+  pointsDebit         Int // snapshot of threshold at redemption time
+  createdByEmployeeId String
+  createdAt           DateTime @default(now())
+
+  customer  Customer @relation(fields: [customerId], references: [id])
+  reward    Reward   @relation(fields: [rewardId], references: [id])
+  createdBy User     @relation(fields: [createdByEmployeeId], references: [id])
+
+  @@index([customerId, createdAt])
+}
+
+model LoginAttempt {
+  id        String   @id @default(cuid())
+  ip        String
+  email     String?
+  success   Boolean
+  createdAt DateTime @default(now())
+
+  @@index([ip, createdAt])
+  @@index([email, createdAt])
+}
+
+model PassDevice {
+  id                      String   @id @default(cuid())
+  customerId              String
+  deviceLibraryIdentifier String
+  pushToken               String
+  passTypeIdentifier      String
+  serialNumber            String
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@unique([deviceLibraryIdentifier, passTypeIdentifier, serialNumber])
+  @@index([serialNumber])
+  @@index([customerId])
+}
+
+// Annonce diffusée aux porteurs de carte Apple Wallet. La plus récente est
+// embarquée dans la carte (champ avec changeMessage) ; sa diffusion déclenche
+// la notification sur l'écran verrouillé via un push APNs vers tous les appareils.
+model Announcement {
+  id          String   @id @default(cuid())
+  title       String
+  body        String
+  deviceCount Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  @@index([createdAt])
+}

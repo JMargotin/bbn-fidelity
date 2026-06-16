@@ -1,0 +1,318 @@
+@import "tailwindcss";
+
+/* =====================================================================
+ * Tailwind 4 design tokens
+ * Reconstructed from the class names used across pages/components.
+ * Adjust hues to taste — the original picks are educated guesses based on
+ * the "neon arcade / GTA Vice City" vibe the site advertises.
+ * ===================================================================== */
+
+@theme {
+  /* Brand palette */
+  --color-magenta: #ff1f8f;
+  --color-magenta-soft: #ff6eb4;
+  --color-cyan: #2de2ff;
+  --color-violet: #b026ff;
+  --color-sunset: #ffd23f;
+  --color-gold: #ffd23f;
+  --color-cream: #fff4fb;
+  --color-lavender: #c8b8e6;
+  --color-lavender-dim: #8a7eab;
+
+  /* Background scale — deep violet/night */
+  --color-night-800: #1a0a30;
+  --color-night-900: #110621;
+  --color-night-950: #0d0617;
+
+  /* Fonts. next/font/google sets --font-anton / --font-outfit / --font-kaushan
+   * on <html> via the .variable className; we re-export them under semantic
+   * names so Tailwind generates `font-display`, `font-body`, `font-script`. */
+  --font-display: var(--font-anton), system-ui, sans-serif;
+  --font-body: var(--font-outfit), system-ui, sans-serif;
+  --font-script: var(--font-kaushan), cursive;
+}
+
+/* =====================================================================
+ * Base
+ * ===================================================================== */
+
+@layer base {
+  html,
+  body {
+    background-color: var(--color-night-950);
+    color: var(--color-lavender);
+    font-family: var(--font-body);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: var(--color-cream);
+    line-height: 1.05;
+  }
+}
+
+/* =====================================================================
+ * Typography utilities
+ * (Tailwind auto-generates `font-display`/`font-body`/`font-script` from
+ * the @theme `--font-*` tokens above — no manual @utility needed.)
+ * ===================================================================== */
+
+@utility arcade {
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
+  color: var(--color-cream);
+  text-transform: uppercase;
+  text-shadow:
+    0 0 8px rgba(255, 31, 143, 0.45),
+    0 0 24px rgba(255, 31, 143, 0.25);
+}
+
+@utility arcade-cyan {
+  text-shadow:
+    0 0 8px rgba(45, 226, 255, 0.5),
+    0 0 24px rgba(45, 226, 255, 0.3);
+}
+
+@utility script {
+  font-family: var(--font-script);
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+}
+
+@utility text-grad {
+  background: linear-gradient(120deg, var(--color-magenta-soft), var(--color-cyan));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility glow-self {
+  filter: drop-shadow(0 0 12px currentColor);
+}
+
+/* =====================================================================
+ * Components
+ * ===================================================================== */
+
+@utility chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-magenta-soft);
+  background: rgba(255, 31, 143, 0.1);
+  border: 1px solid rgba(255, 31, 143, 0.3);
+}
+
+@utility glass {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.02)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(14px);
+}
+
+@utility glass-panel {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+@utility neon-frame {
+  position: relative;
+  box-shadow:
+    0 0 0 1px rgba(255, 31, 143, 0.25),
+    0 10px 40px -10px rgba(255, 31, 143, 0.45),
+    0 0 60px -20px rgba(45, 226, 255, 0.4);
+}
+
+@utility card-pass {
+  background:
+    radial-gradient(120% 80% at 0% 0%, rgba(255, 31, 143, 0.15) 0%, transparent 60%),
+    radial-gradient(120% 80% at 100% 100%, rgba(45, 226, 255, 0.12) 0%, transparent 60%),
+    linear-gradient(160deg, #1a0a30 0%, #0d0617 100%);
+}
+
+@utility btn-neon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-cream);
+  background: linear-gradient(135deg, var(--color-magenta) 0%, var(--color-violet) 100%);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+    0 10px 30px -8px rgba(255, 31, 143, 0.6);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    opacity 0.15s ease;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.18) inset,
+      0 14px 38px -6px rgba(255, 31, 143, 0.75);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+@utility btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-lavender);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--color-cream);
+  }
+}
+
+@utility field {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  color: var(--color-cream);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.875rem;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &::placeholder {
+    color: var(--color-lavender-dim);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: rgba(255, 31, 143, 0.5);
+    box-shadow: 0 0 0 4px rgba(255, 31, 143, 0.15);
+  }
+}
+
+@utility reward-halo {
+  display: inline-flex;
+  width: 4rem;
+  height: 4rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1px solid currentColor;
+  filter: drop-shadow(0 0 12px currentColor);
+}
+
+@utility float-card {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* =====================================================================
+ * Scene (full-bleed background image with tints)
+ * ===================================================================== */
+
+@utility scene {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+@utility scene-photo {
+  object-fit: cover;
+  filter: saturate(1.1) contrast(1.05);
+  opacity: 0.35;
+}
+
+@utility scene-tint {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(60% 50% at 20% 20%, rgba(255, 31, 143, 0.18), transparent 70%),
+    radial-gradient(60% 50% at 80% 80%, rgba(45, 226, 255, 0.15), transparent 70%),
+    linear-gradient(180deg, rgba(13, 6, 23, 0.85), rgba(13, 6, 23, 0.95));
+}
+
+@utility scene-tint-calm {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(13, 6, 23, 0.55), rgba(13, 6, 23, 0.85));
+}
+
+/* =====================================================================
+ * Animations
+ * ===================================================================== */
+
+@keyframes flicker {
+  0%, 18%, 22%, 25%, 53%, 57%, 100% {
+    opacity: 1;
+  }
+  20%, 24%, 55% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes pulse-neon {
+  0%, 100% {
+    box-shadow:
+      0 0 0 0 rgba(255, 31, 143, 0.6),
+      0 0 24px rgba(255, 31, 143, 0.4);
+  }
+  50% {
+    box-shadow:
+      0 0 0 8px rgba(255, 31, 143, 0),
+      0 0 30px rgba(255, 31, 143, 0.6);
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@utility flicker {
+  animation: flicker 3.6s ease-in-out infinite;
+}
+
+@utility pulse-neon {
+  animation: pulse-neon 2.5s ease-in-out infinite;
+}
+
+@utility reveal {
+  animation: reveal 0.7s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
