@@ -4,7 +4,6 @@ import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "@/lib/auth-client";
 import { BrandMark } from "@/components/brand-mark";
-import { Ambiance } from "@/components/ambiance";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -34,7 +33,6 @@ export default function LoginPage() {
 
   return (
     <div className="relative flex min-h-dvh items-center justify-center">
-      <Ambiance variant="calm" />
       <div className="glass neon-frame mx-5 w-full max-w-sm rounded-3xl p-7">
         <div className="mb-6 flex justify-center">
           <BrandMark href="/" />

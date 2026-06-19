@@ -8,12 +8,23 @@
 
 ARG NODE_VERSION=20.20.2
 
-# ---------- deps ----------
+# ---------- deps (all deps, for the build) ----------
 FROM node:${NODE_VERSION}-alpine AS deps
 RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
 COPY package.json package-lock.json* ./
 RUN npm ci
+
+# ---------- prod deps (runtime only) ----------
+# Production dependency tree shipped in the final image. This is what lets
+# `prisma migrate deploy` run at container start: it pulls in prisma's full
+# transitive deps (@prisma/config → effect, dotenv, @prisma/adapter-pg, pg…)
+# which the slim Next standalone output omits.
+FROM node:${NODE_VERSION}-alpine AS proddeps
+RUN apk add --no-cache libc6-compat openssl
+WORKDIR /app
+COPY package.json package-lock.json* ./
+RUN npm ci --omit=dev
 
 # ---------- builder ----------
 FROM node:${NODE_VERSION}-alpine AS builder
@@ -38,17 +49,18 @@ ENV HOSTNAME=0.0.0.0
 RUN addgroup --system --gid 1001 nodejs \
  && adduser --system --uid 1001 nextjs
 
-COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
-# Prisma needs schema + migrations + generated client at runtime so
+# Prisma needs schema + migrations + config + generated client at runtime so
 # `prisma migrate deploy` works at container start.
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 COPY --from=builder --chown=nextjs:nodejs /app/prisma.config.ts ./prisma.config.ts
 COPY --from=builder --chown=nextjs:nodejs /app/src/generated ./src/generated
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/prisma ./node_modules/prisma
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma ./node_modules/@prisma
 
-# Next.js standalone output: a minimal server.js + only the deps actually used.
+# Full production node_modules (server runtime + prisma migrate deps).
+COPY --from=proddeps --chown=nextjs:nodejs /app/node_modules ./node_modules
+
+# Next.js standalone output: server.js + traced files, layered on top.
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 

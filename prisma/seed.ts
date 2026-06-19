@@ -8,7 +8,7 @@
 // engine, so we mirror the client construction from src/lib/prisma.ts.
 import { config as loadEnv } from "dotenv";
 
-loadEnv({ path: ".env.local" });
+loadEnv({ path: [".env.local", ".env"] });
 
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";

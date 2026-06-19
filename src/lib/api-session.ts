@@ -1,6 +1,5 @@
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
-import type { Role } from "@/generated/prisma/client";
 
 type ApiSession = Awaited<ReturnType<typeof auth.api.getSession>>;
 
@@ -19,6 +18,6 @@ export async function getApiSessionOrUnauthorized(): Promise<ApiSessionResult> {
   return { ok: true, session };
 }
 
-export function isOwner(role: Role): boolean {
+export function isOwner(role: string): boolean {
   return role === "OWNER";
 }

@@ -1,0 +1,33 @@
+# Base de données Postgres locale pour le développement.
+#
+#   Démarrer :   docker compose up -d
+#   Logs :       docker compose logs -f db
+#   Arrêter :    docker compose down
+#   Reset total: docker compose down -v   (supprime le volume = efface les données)
+#
+# Puis, dans .env.local, pointe DATABASE_URL sur cette base :
+#   DATABASE_URL=postgresql://postgres:postgres@localhost:5432/bbn_fidelity?schema=public
+#
+# et applique le schéma :  npm run db:migrate  (puis npm run db:seed si besoin)
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: bbn-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: bbn_fidelity
+    ports:
+      - "5432:5432"
+    volumes:
+      - bbn_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d bbn_fidelity"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  bbn_pgdata:

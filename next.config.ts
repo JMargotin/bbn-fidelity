@@ -12,6 +12,11 @@ const nextConfig: NextConfig = {
   },
 
   allowedDevOrigins: ["172.20.10.3"],
+
+  // /inscription was merged into /fidelite — keep old links/QRs working.
+  async redirects() {
+    return [{ source: "/inscription", destination: "/fidelite", permanent: true }];
+  },
 };
 
 export default nextConfig;

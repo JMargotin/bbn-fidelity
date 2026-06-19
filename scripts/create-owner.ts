@@ -6,9 +6,8 @@
 // `mustChangePassword: boolean`), and the better-auth config in src/lib/auth.ts.
 // If the original behaviour differs, adjust accordingly.
 
-import { config as loadEnv } from "dotenv";
-loadEnv({ path: ".env.local" });
-
+// Must be the first import: loads env vars before prisma/auth read them.
+import "./load-env";
 import { auth } from "../src/lib/auth";
 import { prisma } from "../src/lib/prisma";
 

@@ -6,13 +6,27 @@ declare global {
   var prisma: PrismaClient | undefined;
 }
 
-function makeClient() {
+function makeClient(): PrismaClient {
   const url = process.env.DATABASE_URL;
   if (!url) throw new Error("DATABASE_URL is not set");
   const adapter = new PrismaPg({ connectionString: url });
   return new PrismaClient({ adapter, log: ["error"] });
 }
 
-export const prisma: PrismaClient = globalThis.prisma ?? makeClient();
+// Instantiate lazily on first real use. Merely importing this module must NOT
+// throw — `next build` imports every route module to collect page data, and in
+// that phase (and on the Docker builder) DATABASE_URL isn't available. The
+// client is created on first property access, by which point we're at runtime
+// with the env var set.
+function getClient(): PrismaClient {
+  if (!globalThis.prisma) globalThis.prisma = makeClient();
+  return globalThis.prisma;
+}
 
-if (process.env.NODE_ENV !== "production") globalThis.prisma = prisma;
+export const prisma: PrismaClient = new Proxy({} as PrismaClient, {
+  get(_target, prop) {
+    const client = getClient();
+    const value = Reflect.get(client, prop, client);
+    return typeof value === "function" ? value.bind(client) : value;
+  },
+});

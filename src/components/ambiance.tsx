@@ -1,20 +1,12 @@
 import Image from "next/image";
 
-type Variant = "full" | "calm";
-
-export function Ambiance({ variant = "full" }: { variant?: Variant }) {
+/** Full-bleed GTA-style background used site-wide (rendered once in the root layout). */
+export function Ambiance() {
   return (
     <div aria-hidden className="scene">
-      <Image
-        src="/GTA_6_Release.jpg"
-        alt=""
-        fill
-        priority
-        sizes="100vw"
-        className="scene-photo"
-      />
+      <Image src="/GTA_6_Release.jpg" alt="" fill priority sizes="100vw" className="scene-photo" />
       <div className="scene-tint" />
-      {variant === "calm" && <div className="scene-tint-calm" />}
+      <div className="scene-vignette" />
     </div>
   );
 }

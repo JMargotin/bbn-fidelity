@@ -88,6 +88,12 @@ model Customer {
   firstName   String
   phoneE164   String    @unique
   pointsTotal Int       @default(0)
+  // Customer-facing web login (espace fidélité). PIN is a 4-digit code, hashed
+  // with scrypt. A null pinHash means "still the default PIN" (1234) — set for
+  // legacy customers created before web login existed.
+  pinHash           String?
+  pinFailedAttempts Int       @default(0)
+  pinLockedUntil    DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?

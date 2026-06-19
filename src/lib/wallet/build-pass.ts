@@ -4,14 +4,13 @@ import forge from "node-forge";
 import { PKPass } from "passkit-generator";
 import { prisma } from "@/lib/prisma";
 import { signQrToken } from "@/lib/services/qr";
+import { compactRewardLabel, loadActiveRewards } from "@/lib/wallet/rewards";
 
 type CustomerPassInput = {
   id: string;
   firstName: string;
   pointsTotal: number;
 };
-
-type Reward = { label: string; thresholdPoints: number };
 
 type CertBundle = {
   wwdr: string;
@@ -30,12 +29,6 @@ const ASSET_FILES = [
   "logo@2x.png",
   "logo@3x.png",
 ] as const;
-
-const FALLBACK_REWARDS: Reward[] = [
-  { label: "Boisson offerte", thresholdPoints: 50 },
-  { label: "Burger offert", thresholdPoints: 100 },
-  { label: "Menu offert", thresholdPoints: 200 },
-];
 
 let cachedCerts: CertBundle | null = null;
 let cachedAssets: AssetMap | null = null;
@@ -98,20 +91,6 @@ async function loadAssets(): Promise<AssetMap> {
   );
   cachedAssets = Object.fromEntries(entries) as AssetMap;
   return cachedAssets;
-}
-
-async function loadActiveRewards(): Promise<Reward[]> {
-  const rewards = await prisma.reward.findMany({
-    where: { active: true },
-    orderBy: { thresholdPoints: "asc" },
-    select: { label: true, thresholdPoints: true },
-  });
-  return rewards.length > 0 ? rewards : FALLBACK_REWARDS;
-}
-
-/** Compact reward label for the auxiliary "rewards list" field on the front. */
-function compactRewardLabel(label: string): string {
-  return label.replace(/\s*(offerte?|complet|gratuite?)\s*/gi, " ").trim() || label;
 }
 
 export async function buildApplePass(customer: CustomerPassInput): Promise<Buffer> {

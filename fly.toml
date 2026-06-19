@@ -1,0 +1,45 @@
+# fly.toml app configuration file generated for burgerbynight72 on 2026-06-19T20:07:36+02:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'burgerbynight72'
+primary_region = 'cdg'
+
+[build]
+  dockerfile = 'Dockerfile'
+
+[env]
+  APPLE_PASS_TYPE_ID = 'pass.com.burgerbynight.fidelity'
+  APPLE_PASS_WEB_SERVICE_URL = 'https://burgerbynight72.fly.dev'
+  APPLE_TEAM_ID = 'Y44D93Z634'
+  APP_BASE_URL = 'https://burgerbynight72.fly.dev'
+  BETTER_AUTH_URL = 'https://burgerbynight72.fly.dev'
+  NEXT_PUBLIC_APP_BASE_URL = 'https://burgerbynight72.fly.dev'
+  NODE_ENV = 'production'
+  PORT = '3000'
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = 'off'
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ['app']
+
+  [http_service.concurrency]
+    type = 'requests'
+    hard_limit = 250
+    soft_limit = 200
+
+  [[http_service.checks]]
+    interval = '30s'
+    timeout = '5s'
+    grace_period = '10s'
+    method = 'GET'
+    path = '/api/health'
+
+[[vm]]
+  cpu_kind = 'shared'
+  cpus = 1
+  memory_mb = 1024

@@ -50,7 +50,7 @@ export default function Home() {
             className="reveal flex flex-wrap items-center gap-4"
             style={{ animationDelay: "0.24s" }}
           >
-            <Link href="/inscription" className="btn-neon rounded-full px-8 py-4 text-lg">
+            <Link href="/fidelite" className="btn-neon rounded-full px-8 py-4 text-lg">
               Créer ma carte
             </Link>
             <span className="text-sm text-lavender-dim">Gratuit · 30 secondes ⚡</span>
@@ -103,7 +103,7 @@ export default function Home() {
           Rejoins le crew BBN. Ta première commande te rapporte déjà des points.
         </p>
         <Link
-          href="/inscription"
+          href="/fidelite"
           className="btn-neon mt-8 inline-flex rounded-full px-9 py-4 text-lg"
         >
           Rejoindre le programme

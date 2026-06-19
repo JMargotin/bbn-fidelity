@@ -1,17 +1,15 @@
 import Link from "next/link";
-import { Ambiance } from "@/components/ambiance";
 import { BrandMark } from "@/components/brand-mark";
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="relative flex min-h-dvh flex-col">
-      <Ambiance />
 
       <header className="sticky top-0 z-40 border-b border-white/10 bg-night-900/60 backdrop-blur-xl">
         <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-5 py-3">
           <BrandMark />
           <Link
-            href="/inscription"
+            href="/fidelite"
             className="btn-ghost rounded-full px-4 py-2 text-sm font-semibold"
           >
             Ma carte

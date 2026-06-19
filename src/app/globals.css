@@ -37,9 +37,15 @@
  * ===================================================================== */
 
 @layer base {
-  html,
-  body {
+  html {
+    /* Dark canvas behind everything. Kept on <html> only — the <body> stays
+     * transparent so the fixed .scene (z-index:-10) background image shows
+     * through instead of being covered by an opaque body box. */
     background-color: var(--color-night-950);
+  }
+
+  body {
+    background-color: transparent;
     color: var(--color-lavender);
     font-family: var(--font-body);
   }
@@ -240,23 +246,33 @@
 
 @utility scene-photo {
   object-fit: cover;
-  filter: saturate(1.1) contrast(1.05);
-  opacity: 0.35;
+  object-position: center 30%;
+  filter: saturate(1.18) contrast(1.04);
+  opacity: 0.5;
 }
 
+/* Neon glow + vertical readability gradient: darker at the top (header) and
+ * bottom (footer/content), lighter in the upper-middle so the artwork breathes. */
 @utility scene-tint {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(60% 50% at 20% 20%, rgba(255, 31, 143, 0.18), transparent 70%),
-    radial-gradient(60% 50% at 80% 80%, rgba(45, 226, 255, 0.15), transparent 70%),
-    linear-gradient(180deg, rgba(13, 6, 23, 0.85), rgba(13, 6, 23, 0.95));
+    radial-gradient(55% 45% at 18% 12%, rgba(255, 31, 143, 0.22), transparent 60%),
+    radial-gradient(55% 50% at 85% 88%, rgba(45, 226, 255, 0.18), transparent 62%),
+    linear-gradient(
+      180deg,
+      rgba(13, 6, 23, 0.82) 0%,
+      rgba(13, 6, 23, 0.42) 32%,
+      rgba(13, 6, 23, 0.55) 60%,
+      rgba(13, 6, 23, 0.96) 100%
+    );
 }
 
-@utility scene-tint-calm {
+/* Cinematic vignette darkening the edges. */
+@utility scene-vignette {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(13, 6, 23, 0.55), rgba(13, 6, 23, 0.85));
+  background: radial-gradient(125% 125% at 50% 38%, transparent 55%, rgba(8, 3, 15, 0.78) 100%);
 }
 
 /* =====================================================================

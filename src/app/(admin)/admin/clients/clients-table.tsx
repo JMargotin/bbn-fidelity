@@ -38,6 +38,17 @@ export function ClientsTable() {
     search(query);
   }
 
+  async function resetPin(c: Customer) {
+    if (!confirm(`Réinitialiser le code PIN de ${c.firstName} à 1234 ?`)) return;
+    const res = await fetch(`/api/customer/by-id/${c.id}/reset-pin`, { method: "POST" });
+    if (res.ok) {
+      const { defaultPin } = await res.json();
+      alert(`Code PIN de ${c.firstName} réinitialisé à ${defaultPin}.`);
+    } else {
+      alert("Échec de la réinitialisation du PIN.");
+    }
+  }
+
   return (
     <div className="space-y-4">
       <form onSubmit={handleSubmit} className="flex gap-2">
@@ -77,13 +88,22 @@ export function ClientsTable() {
                 <td className="px-4 py-3 text-lavender-dim">
                   {new Date(c.createdAt).toLocaleDateString("fr-FR")}
                 </td>
-                <td className="px-4 py-3 text-right">
-                  <Link
-                    href={`/admin/scan?id=${c.id}`}
-                    className="btn-ghost rounded-full px-3 py-1.5 text-xs font-medium"
-                  >
-                    Scanner →
-                  </Link>
+                <td className="px-4 py-3">
+                  <div className="flex items-center justify-end gap-2">
+                    <button
+                      type="button"
+                      onClick={() => resetPin(c)}
+                      className="btn-ghost rounded-full px-3 py-1.5 text-xs font-medium"
+                    >
+                      Reset PIN
+                    </button>
+                    <Link
+                      href={`/admin/scan?id=${c.id}`}
+                      className="btn-ghost rounded-full px-3 py-1.5 text-xs font-medium"
+                    >
+                      Scanner →
+                    </Link>
+                  </div>
                 </td>
               </tr>
             ))}
