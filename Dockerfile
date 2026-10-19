@@ -57,6 +57,13 @@ COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 COPY --from=builder --chown=nextjs:nodejs /app/prisma.config.ts ./prisma.config.ts
 COPY --from=builder --chown=nextjs:nodejs /app/src/generated ./src/generated
 
+# Admin scripts (contest:grant, create-owner, create-staff) so they can be run
+# on the machine with `fly ssh console` + `npx tsx`. tsconfig.json resolves the
+# `@/` path alias used by src/lib.
+COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
+COPY --from=builder --chown=nextjs:nodejs /app/src/lib ./src/lib
+COPY --from=builder --chown=nextjs:nodejs /app/tsconfig.json ./tsconfig.json
+
 # Full production node_modules (server runtime + prisma migrate deps).
 COPY --from=proddeps --chown=nextjs:nodejs /app/node_modules ./node_modules
 
