@@ -1,5 +1,6 @@
 import Image from "next/image";
 import QRCode from "qrcode";
+import { ContestMemberCard } from "@/components/contest-member-card";
 import { getCurrentCustomer } from "@/lib/customer-session";
 import { prisma } from "@/lib/prisma";
 import { signQrToken } from "@/lib/services/qr";
@@ -99,6 +100,9 @@ export default async function FidelitePage() {
 
       {/* Add to home screen */}
       <InstallPrompt />
+
+      {/* Jeu-concours */}
+      <ContestMemberCard customerId={customer.id} pointsTotal={customer.pointsTotal} />
 
       {/* Apple Wallet */}
       <a

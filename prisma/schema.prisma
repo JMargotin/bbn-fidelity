@@ -98,9 +98,10 @@ model Customer {
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
 
-  transactions Transaction[]
-  redemptions  RewardRedemption[]
-  passDevices  PassDevice[]
+  transactions   Transaction[]
+  redemptions    RewardRedemption[]
+  passDevices    PassDevice[]
+  contestEntries ContestEntry[]
 
   @@index([deletedAt])
 }
@@ -188,4 +189,93 @@ model Announcement {
   createdAt   DateTime @default(now())
 
   @@index([createdAt])
+}
+
+// ============================================================================
+// Jeu-concours
+// ============================================================================
+
+// Un jeu-concours à tickets. Les tickets s'achètent avec les points de
+// fidélité (pointsPerTicket) et restent valables pour TOUS les tirages du
+// concours : le compteur de tickets d'un participant ne redescend jamais.
+model Contest {
+  id              String   @id @default(cuid())
+  name            String
+  prizeLabel      String
+  startsAt        DateTime
+  endsAt          DateTime
+  pointsPerTicket Int      @default(5)
+  // Tickets offerts d'office lors de la première participation.
+  freeTickets     Int      @default(1)
+  active          Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  entries ContestEntry[]
+  draws   ContestDraw[]
+
+  @@index([active, startsAt])
+}
+
+// Participation d'un client à un concours. `tickets` est le total courant
+// (offerts + achetés) ; il sert de poids lors du tirage au sort.
+model ContestEntry {
+  id          String   @id @default(cuid())
+  contestId   String
+  customerId  String
+  tickets     Int      @default(0)
+  pointsSpent Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  contest   Contest                 @relation(fields: [contestId], references: [id], onDelete: Cascade)
+  customer  Customer                @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  purchases ContestTicketPurchase[]
+  wins      ContestDraw[]
+
+  @@unique([contestId, customerId])
+  @@index([contestId])
+  @@index([customerId])
+}
+
+enum ContestTicketSource {
+  FREE
+  PURCHASE
+}
+
+// Journal d'attribution des tickets (audit : qui a eu quoi, quand, pour
+// combien de points). Le total vit sur ContestEntry.tickets.
+model ContestTicketPurchase {
+  id          String              @id @default(cuid())
+  entryId     String
+  quantity    Int
+  pointsSpent Int
+  source      ContestTicketSource @default(PURCHASE)
+  createdAt   DateTime            @default(now())
+
+  entry ContestEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+
+  @@index([entryId, createdAt])
+}
+
+// Un tirage hebdomadaire. `position` ordonne les tirages (1, 2, 3...).
+// Les champs *At-draw sont des instantanés conservés pour l'audit.
+model ContestDraw {
+  id            String    @id @default(cuid())
+  contestId     String
+  position      Int
+  label         String
+  scheduledFor  DateTime
+  drawnAt       DateTime?
+  winnerEntryId String?
+  // Instantanés au moment du tirage (traçabilité du résultat).
+  winnerTickets Int?
+  totalTickets  Int?
+  winningTicket Int?
+
+  contest     Contest       @relation(fields: [contestId], references: [id], onDelete: Cascade)
+  winnerEntry ContestEntry? @relation(fields: [winnerEntryId], references: [id])
+
+  @@unique([contestId, position])
+  @@index([contestId, scheduledFor])
 }

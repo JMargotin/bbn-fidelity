@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ContestTeaser } from "@/components/contest-teaser";
 import { LoyaltyCard } from "@/components/loyalty-card";
 import { RewardTiers } from "@/components/reward-tiers";
 
@@ -61,6 +62,8 @@ export default function Home() {
           <LoyaltyCard />
         </div>
       </section>
+
+      <ContestTeaser />
 
       <section className="space-y-7">
         <div className="flex flex-wrap items-end justify-between gap-3">

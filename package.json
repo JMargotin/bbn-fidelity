@@ -16,7 +16,9 @@
     "db:reset": "prisma migrate reset --force",
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
-    "create-owner": "tsx scripts/create-owner.ts"
+    "create-owner": "tsx scripts/create-owner.ts",
+    "create-staff": "tsx scripts/create-staff.ts",
+    "contest:grant": "tsx scripts/contest-grant-free-tickets.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.8.0",

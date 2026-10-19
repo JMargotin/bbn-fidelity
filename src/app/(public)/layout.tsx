@@ -8,12 +8,20 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
       <header className="sticky top-0 z-40 border-b border-white/10 bg-night-900/60 backdrop-blur-xl">
         <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-5 py-3">
           <BrandMark />
-          <Link
-            href="/fidelite"
-            className="btn-ghost rounded-full px-4 py-2 text-sm font-semibold"
-          >
-            Ma carte
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/concours"
+              className="rounded-full px-3 py-2 text-sm font-semibold text-magenta-soft transition hover:text-cream sm:px-4"
+            >
+              Concours
+            </Link>
+            <Link
+              href="/fidelite"
+              className="btn-ghost rounded-full px-4 py-2 text-sm font-semibold"
+            >
+              Ma carte
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -27,6 +35,9 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
           <div className="flex items-center gap-2.5">
             <Link href="/mentions-legales" className="mt-1 underline hover:text-magenta-soft">
               Mentions légales
+            </Link>
+            <Link href="/concours/reglement" className="mt-1 underline hover:text-magenta-soft">
+              Règlement du jeu
             </Link>
             <Link href="/admin" className="mt-1 underline hover:text-magenta-soft">
               Espace livreur
