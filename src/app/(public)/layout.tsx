@@ -32,7 +32,10 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
           <p className="font-display text-sm tracking-wide text-lavender">
             Burger by Night · Le Mans 72
           </p>
-          <div className="flex items-center gap-2.5">
+          <div className="flex flex-wrap items-center justify-center gap-x-2.5">
+            <Link href="/contact" className="mt-1 underline hover:text-magenta-soft">
+              Contact
+            </Link>
             <Link href="/mentions-legales" className="mt-1 underline hover:text-magenta-soft">
               Mentions légales
             </Link>

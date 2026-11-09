@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Anton, Outfit, Kaushan_Script } from "next/font/google";
+import Script from "next/script";
 import { Ambiance } from "@/components/ambiance";
+import { CODEXA_EMBED_SRC, CODEXA_SITE_KEY } from "@/lib/codexa";
 import "./globals.css";
 
 const anton = Anton({
@@ -46,6 +48,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Site-wide GTA-style background, rendered once so it persists across navigations */}
         <Ambiance />
         {children}
+        {/* CodexaStudio: announcement banner + cookieless stats on every page.
+            embed.js reads data-site via document.currentScript and tracks
+            client-side navigations by wrapping history.pushState. */}
+        <Script src={CODEXA_EMBED_SRC} data-site={CODEXA_SITE_KEY} strategy="afterInteractive" />
       </body>
     </html>
   );
