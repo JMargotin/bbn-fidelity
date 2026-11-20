@@ -131,13 +131,35 @@ export async function broadcastPassUpdateToAll(): Promise<{
   const tokenToTopic = new Map<string, string>();
   for (const d of devices) tokenToTopic.set(d.pushToken, d.passTypeIdentifier);
 
+  const entries = [...tokenToTopic.entries()];
   const results = await Promise.allSettled(
-    [...tokenToTopic.entries()].map(([token, topic]) => sendApnsPush(token, topic)),
+    entries.map(([token, topic]) => sendApnsPush(token, topic)),
   );
 
   let ok = 0;
   let failed = 0;
-  for (const r of results) (r.status === "fulfilled" ? ok++ : failed++);
+  const deadTokens: string[] = [];
+  for (let i = 0; i < results.length; i++) {
+    const r = results[i];
+    if (r.status === "fulfilled") {
+      ok++;
+      continue;
+    }
+    failed++;
+    // Un token refusé (410 Unregistered ou 400 BadDeviceToken) ne sera jamais
+    // ressuscité : on purge l'appareil pour que le compteur reste juste.
+    const msg = r.reason instanceof Error ? r.reason.message : String(r.reason);
+    if (/APNs 410/.test(msg) || /BadDeviceToken/.test(msg)) {
+      deadTokens.push(entries[i][0]);
+    }
+  }
+
+  if (deadTokens.length > 0) {
+    const purged = await prisma.passDevice.deleteMany({
+      where: { pushToken: { in: deadTokens } },
+    });
+    console.log(`[APNs] purge: ${purged.count} appareil(s) obsolète(s) supprimé(s)`);
+  }
 
   console.log(`[APNs] broadcast: ${ok} OK, ${failed} échecs sur ${tokenToTopic.size} appareils`);
   return { devices: tokenToTopic.size, ok, failed };

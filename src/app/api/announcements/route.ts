@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getApiSessionOrUnauthorized, isOwner } from "@/lib/api-session";
-import { broadcastPassUpdateToAll } from "@/lib/services/passkit-push";
+import { bumpAllCustomersWithDevices } from "@/lib/services/passkit-push";
 
 const CreateAnnouncementSchema = z.object({
   title: z.string().trim().min(1).max(80),
@@ -49,7 +49,7 @@ export async function POST(request: Request) {
 
   let broadcast = { devices: 0, ok: 0, failed: 0 };
   try {
-    broadcast = await broadcastPassUpdateToAll();
+    broadcast = await bumpAllCustomersWithDevices();
   } catch (err) {
     console.error("Broadcast push error:", err);
   }
