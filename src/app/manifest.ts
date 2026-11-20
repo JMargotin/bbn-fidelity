@@ -8,8 +8,8 @@ export default function manifest(): MetadataRoute.Manifest {
     start_url: "/fidelite",
     scope: "/",
     display: "standalone",
-    background_color: "#08030f",
-    theme_color: "#200a3c",
+    background_color: "#040a1e",
+    theme_color: "#0d1f44",
     lang: "fr",
     icons: [
       { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },

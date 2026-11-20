@@ -8,21 +8,22 @@
  * ===================================================================== */
 
 @theme {
-  /* Brand palette */
-  --color-magenta: #ff1f8f;
-  --color-magenta-soft: #ff6eb4;
-  --color-cyan: #2de2ff;
-  --color-violet: #b026ff;
+  /* Brand palette — GTA VI "Vice City by Night + Ice" */
+  --color-magenta: #ff2d9f;
+  --color-magenta-soft: #ff7cc4;
+  --color-cyan: #4ad8ff;
+  --color-ice: #8ee9ff;
+  --color-violet: #a855ff;
   --color-sunset: #ffd23f;
   --color-gold: #ffd23f;
-  --color-cream: #fff4fb;
-  --color-lavender: #c8b8e6;
-  --color-lavender-dim: #8a7eab;
+  --color-cream: #f0f8ff;
+  --color-lavender: #a9c8ec;
+  --color-lavender-dim: #6b89b3;
 
-  /* Background scale — deep violet/night */
-  --color-night-800: #1a0a30;
-  --color-night-900: #110621;
-  --color-night-950: #0d0617;
+  /* Background scale — deep frozen blue/night */
+  --color-night-800: #0d1f44;
+  --color-night-900: #081330;
+  --color-night-950: #040a1e;
 
   /* Fonts. next/font/google sets --font-anton / --font-outfit / --font-kaushan
    * on <html> via the .variable className; we re-export them under semantic
@@ -71,14 +72,14 @@
   color: var(--color-cream);
   text-transform: uppercase;
   text-shadow:
-    0 0 8px rgba(255, 31, 143, 0.45),
-    0 0 24px rgba(255, 31, 143, 0.25);
+    0 0 8px rgba(255, 45, 159, 0.5),
+    0 0 24px rgba(255, 45, 159, 0.28);
 }
 
 @utility arcade-cyan {
   text-shadow:
-    0 0 8px rgba(45, 226, 255, 0.5),
-    0 0 24px rgba(45, 226, 255, 0.3);
+    0 0 8px rgba(74, 216, 255, 0.55),
+    0 0 24px rgba(74, 216, 255, 0.35);
 }
 
 @utility script {
@@ -112,8 +113,8 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--color-magenta-soft);
-  background: rgba(255, 31, 143, 0.1);
-  border: 1px solid rgba(255, 31, 143, 0.3);
+  background: rgba(255, 45, 159, 0.12);
+  border: 1px solid rgba(255, 45, 159, 0.35);
 }
 
 @utility glass {
@@ -134,16 +135,16 @@
 @utility neon-frame {
   position: relative;
   box-shadow:
-    0 0 0 1px rgba(255, 31, 143, 0.25),
-    0 10px 40px -10px rgba(255, 31, 143, 0.45),
-    0 0 60px -20px rgba(45, 226, 255, 0.4);
+    0 0 0 1px rgba(74, 216, 255, 0.3),
+    0 10px 40px -10px rgba(255, 45, 159, 0.5),
+    0 0 60px -20px rgba(74, 216, 255, 0.5);
 }
 
 @utility card-pass {
   background:
-    radial-gradient(120% 80% at 0% 0%, rgba(255, 31, 143, 0.15) 0%, transparent 60%),
-    radial-gradient(120% 80% at 100% 100%, rgba(45, 226, 255, 0.12) 0%, transparent 60%),
-    linear-gradient(160deg, #1a0a30 0%, #0d0617 100%);
+    radial-gradient(120% 80% at 0% 0%, rgba(255, 45, 159, 0.18) 0%, transparent 60%),
+    radial-gradient(120% 80% at 100% 100%, rgba(74, 216, 255, 0.18) 0%, transparent 62%),
+    linear-gradient(160deg, #0d1f44 0%, #040a1e 100%);
 }
 
 @utility btn-neon {
@@ -157,7 +158,7 @@
   background: linear-gradient(135deg, var(--color-magenta) 0%, var(--color-violet) 100%);
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.1) inset,
-    0 10px 30px -8px rgba(255, 31, 143, 0.6);
+    0 10px 30px -8px rgba(255, 45, 159, 0.65);
   transition:
     transform 0.15s ease,
     box-shadow 0.15s ease,
@@ -167,7 +168,7 @@
     transform: translateY(-1px);
     box-shadow:
       0 0 0 1px rgba(255, 255, 255, 0.18) inset,
-      0 14px 38px -6px rgba(255, 31, 143, 0.75);
+      0 14px 38px -6px rgba(255, 45, 159, 0.78);
   }
 
   &:disabled {
@@ -212,8 +213,8 @@
 
   &:focus {
     outline: none;
-    border-color: rgba(255, 31, 143, 0.5);
-    box-shadow: 0 0 0 4px rgba(255, 31, 143, 0.15);
+    border-color: rgba(74, 216, 255, 0.55);
+    box-shadow: 0 0 0 4px rgba(74, 216, 255, 0.18);
   }
 }
 
@@ -257,14 +258,14 @@
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(55% 45% at 18% 12%, rgba(255, 31, 143, 0.22), transparent 60%),
-    radial-gradient(55% 50% at 85% 88%, rgba(45, 226, 255, 0.18), transparent 62%),
+    radial-gradient(55% 45% at 18% 12%, rgba(255, 45, 159, 0.24), transparent 60%),
+    radial-gradient(55% 50% at 85% 88%, rgba(74, 216, 255, 0.22), transparent 62%),
     linear-gradient(
       180deg,
-      rgba(13, 6, 23, 0.82) 0%,
-      rgba(13, 6, 23, 0.42) 32%,
-      rgba(13, 6, 23, 0.55) 60%,
-      rgba(13, 6, 23, 0.96) 100%
+      rgba(4, 10, 30, 0.82) 0%,
+      rgba(4, 10, 30, 0.42) 32%,
+      rgba(4, 10, 30, 0.55) 60%,
+      rgba(4, 10, 30, 0.96) 100%
     );
 }
 
@@ -272,7 +273,7 @@
 @utility scene-vignette {
   position: absolute;
   inset: 0;
-  background: radial-gradient(125% 125% at 50% 38%, transparent 55%, rgba(8, 3, 15, 0.78) 100%);
+  background: radial-gradient(125% 125% at 50% 38%, transparent 55%, rgba(2, 6, 20, 0.80) 100%);
 }
 
 /* =====================================================================
@@ -291,13 +292,13 @@
 @keyframes pulse-neon {
   0%, 100% {
     box-shadow:
-      0 0 0 0 rgba(255, 31, 143, 0.6),
-      0 0 24px rgba(255, 31, 143, 0.4);
+      0 0 0 0 rgba(255, 45, 159, 0.6),
+      0 0 24px rgba(255, 45, 159, 0.4);
   }
   50% {
     box-shadow:
-      0 0 0 8px rgba(255, 31, 143, 0),
-      0 0 30px rgba(255, 31, 143, 0.6);
+      0 0 0 8px rgba(255, 45, 159, 0),
+      0 0 30px rgba(74, 216, 255, 0.55);
   }
 }
 
